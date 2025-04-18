@@ -9,12 +9,10 @@ package frc.robot;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+//import edu.wpi.first.math.controller.PIDController;
+//import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,7 +21,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -52,8 +49,8 @@ public class Robot extends TimedRobot {
   private final PWMVictorSPX backRightMotor = new PWMVictorSPX(4); 
 
   private final SparkMax pivotMotor = new SparkMax(1, MotorType.kBrushless);
-  private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(0);
-  private final PIDController pivotPID = new PIDController(.1, 0, 0);
+  //private final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(0);
+  //private final PIDController pivotPID = new PIDController(.1, 0, 0);
 
   private final SparkMax intakeMotor = new SparkMax(2, MotorType.kBrushless);
 
@@ -75,6 +72,7 @@ public class Robot extends TimedRobot {
 
   //FUNCTIONS
   //PIVOT
+  
   public void setPivotSpeed(double speed){
     pivotMotor.set(speed);
   }
@@ -183,22 +181,19 @@ public class Robot extends TimedRobot {
     m_drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
 
     //INTAKE
-    intakeMotor.setInverted(false);
+    //intakeMotor.setInverted(false);
 
     //PIVOT
-    pivotMotor.setInverted(true);
-    //pivotMotor.setIdleMode(IdleMode.kBrake);
-    //SmartDashboard.putData("Reset Pivot Encoder", new InstantCommand(() -> resetPivotEncoder()).ignoringDisable(true));
+    //pivotMotor.setInverted(false);
+    
 
     //SHOOTER
-    leftshootMotor.setInverted(false);
+    //leftshootMotor.setInverted(false);
     rightshootMotor.setControl(new Follower(5, true));
 
     //CLIMBER
-    leftclimbMotor.setInverted(false);
-    rightclimbMotor.setInverted(true);
-
-    // rightclimbMotor.follow(leftclimbMotor); buwomp
+    //leftclimbMotor.setInverted(false);
+    //rightclimbMotor.setInverted(false);
     
   }
 
@@ -275,11 +270,10 @@ public class Robot extends TimedRobot {
     m_drive.tankDrive(leftstick.getY(), rightstick.getY());
 
     //PIVOT
-    
-    if (xbox.getYButton()){
-      setPivotSpeed(.3);
-    } else {
+    if (xbox.getLeftY() >= 0.5 || xbox.getLeftY() <=.5){
       setPivotSpeed(xbox.getLeftY()*.45);
+    } else {
+      setPivotSpeed(0);
     }
 
     //INTAKE
@@ -312,9 +306,9 @@ public class Robot extends TimedRobot {
 
     //Right Climber
     if (leftstick.getRawButton(2)){
-      rightclimbMotor.set(1);
-    } else if (leftstick.getRawButton(1)){
       rightclimbMotor.set(-1);
+    } else if (leftstick.getRawButton(1)){
+      rightclimbMotor.set(1);
     } else {
       rightclimbMotor.set(0);
     }
